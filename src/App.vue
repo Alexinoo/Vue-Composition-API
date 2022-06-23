@@ -114,6 +114,39 @@ Therefore, what you learn in this course still works in the same way, no matter 
 
 
 
+ <!-- Building Reactive Objects
+ ========================================================================
+
+ -Using ref with objects works but we can also work with reactive that is a function we import from vue
+
+      import { reactive } from 'vue'
+
+-reactive is specifically made for objects
+
+  const user = reactive({
+          name : 'Maximilian',
+          age : 31
+      })
+-Unlike ref which works with Strings / Number , You must only pass an object to reactive
+
+-reactive does one  thing - Wraps the object passed into a proxy
+
+-Therefore we can access property values by ommitiing the .value
+      
+      user.name = 'Max'
+      user.age = 32
+
+
+-ref - Wraps the object into an object with an extra value : _value : Proxy object
+
+-And therefore we have to drill down by:
+
+      user.value.name = 'Max'
+      user.value.age = 32
+
+ -->
+
+
 
 <template>
   <section class="container">
@@ -123,34 +156,31 @@ Therefore, what you learn in this course still works in the same way, no matter 
 </template>
 
 <script>
-import { ref } from 'vue';
+import { reactive } from 'vue';
 
 export default {
 
-  // data() {
-  //   return {
-  //     userName: 'Maximilian',
-  //   };
-  // },
 
   setup(){
 
-    // const userName = ref('Maximilian')
+    // const userName = reactive('Maximilian')
     // const userAge = ref(31)
 
-    const user = ref({
+    const user = reactive({
         name : 'Maximilian',
         age : 31
     })
 
+  //  console.log(user); // Proxy {name: 'Maximilian', age: 31}
+
     setTimeout(()=>{
 
-      user.value.name = 'Max'
-      user.value.age = 32
+      user.name = 'Max'
+      user.age = 32
 
     },2000 )
 
-    return { username : user.value.name ,  age : user.value.age , user };
+    return { user};
   }
 };
 
