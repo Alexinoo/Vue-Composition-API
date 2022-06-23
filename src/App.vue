@@ -139,10 +139,78 @@ Therefore, what you learn in this course still works in the same way, no matter 
 
 -ref - Wraps the object into an object with an extra value : _value : Proxy object
 
--And therefore we have to drill down by:
+-And therefore we have to drill down when accessing their values by:
 
       user.value.name = 'Max'
       user.value.age = 32
+
+    -->
+
+
+  <!--A Deep Dive into Reactivity
+  ==================================================================
+
+  -Exposing the values directly to the template won't work ;-
+
+  -And changes made by setTimeout aren't picked up
+
+  e.g
+
+    <h2>{{ name }}</h2>
+    <h3>{{ age }}</h3>
+
+  return { name: user.name, age: user.age};
+
+  -And the reason for that is that the entire object is reactive but the properties are not and if we expose their values to the template , Vue thinks that only the values matter and not the entire object
+
+  -That's why we had to do it differently and expose the object instead
+
+    return { user : user };
+
+- If we console log the 2 ; ref and reactive
+
+      console.log(userAge.value); // 31
+
+      console.log(user.name, user.age); // name: 'Maximilian', age: 31
+
+-We see that they are only values that won't change and therefore will be rendered as they are
+
+-Vue offers 2 Helper methods that we can use to check if these values are reactive or not
+
+    1.) isRef
+    2.) isReactive
+
+-And therefore we can import them from vue if we want to use them
+
+      import { ref , reactive , isRef , isReactive } from 'vue';     
+
+-And once we use to test the reactivity 
+
+    console.log( isRef(userAge.value) ); // false
+
+    console.log(isReactive(user.name), user.age); //false 31
+
+-They all return false
+
+-On the other hand , if we test the userAge and the entire user {}
+
+    console.log( isRef(userAge) ); //true
+
+    console.log(isReactive(user) ) ; //true
+
+-We get true on them 
+
+-There is a function we can use to make the values reactive toRefs()
+
+-We pass the user object toRefs({}) and thus the properties will now be reactive
+
+    const userRefs = toRefs(user)
+  
+    return { name : userRefs.name , age : userRefs.age };
+
+-And this now works ; Updates from setTimeout() function are automatically updated in the template
+
+
 
  -->
 
@@ -150,13 +218,13 @@ Therefore, what you learn in this course still works in the same way, no matter 
 
 <template>
   <section class="container">
-    <h2>{{ user.name }}</h2>
-    <h3>{{ user.age }}</h3>
+    <h2>{{ name }}</h2>
+    <h3>{{ age }}</h3>
   </section>
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { ref, reactive, isRef, isReactive } from 'vue';
 
 export default {
 
@@ -164,14 +232,16 @@ export default {
   setup(){
 
     // const userName = reactive('Maximilian')
-    // const userAge = ref(31)
+
+
+    const userAge = ref(31)
 
     const user = reactive({
         name : 'Maximilian',
         age : 31
     })
 
-  //  console.log(user); // Proxy {name: 'Maximilian', age: 31}
+   
 
     setTimeout(()=>{
 
@@ -180,7 +250,13 @@ export default {
 
     },2000 )
 
-    return { user};
+    // const userRefs = toRefs(user)
+
+    console.log( isRef(userAge) );
+
+    console.log(isReactive(user) ) ; 
+
+    return { user };
   }
 };
 
