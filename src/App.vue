@@ -110,14 +110,15 @@ This course was recorded before <script setup> was added, hence I use the setup(
 All Vue and Composition API concepts apply either way though. 
 
 Therefore, what you learn in this course still works in the same way, no matter if you're using <script setup> or the setup() method.
-
-
  -->
+
+
 
 
 <template>
   <section class="container">
-    <h2>{{ userName }}</h2>
+    <h2>{{ user.name }}</h2>
+    <h3>{{ user.age }}</h3>
   </section>
 </template>
 
@@ -131,17 +132,25 @@ export default {
   //     userName: 'Maximilian',
   //   };
   // },
+
   setup(){
 
-    const userName = ref('Maximilian')
+    // const userName = ref('Maximilian')
+    // const userAge = ref(31)
+
+    const user = ref({
+        name : 'Maximilian',
+        age : 31
+    })
 
     setTimeout(()=>{
 
-      userName.value = 'Max';
+      user.value.name = 'Max'
+      user.value.age = 32
 
     },2000 )
 
-    return {   userName  };
+    return { username : user.value.name ,  age : user.value.age , user };
   }
 };
 
